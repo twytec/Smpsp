@@ -1,0 +1,67 @@
+﻿@inject Data.TranslationService _ts
+
+<MudDialog>
+    <DialogContent>
+        <MudStack>
+            @if (_user is not null)
+            {
+                <MudTextField @bind-Value="_user.Name" Label="@_ts.I18n.Name" />
+                <MudTextField @bind-Value="_user.EMail" Label="@_ts.I18n.EMail" InputType="InputType.Email" />
+                <MudSelect @bind-Value="_user.LanguageCode" Label="@_ts.I18n.Language">
+                    @foreach (var item in _ts.Languages)
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudNumericField @bind-Value="_user.VetoLevel" Label="@_ts.I18n.VetoLevel" />
+                <MudCheckBox @bind-Value="_user.Active" Label="@_ts.I18n.Active" />
+            }
+            
+            @if (_err is not null)
+            {
+                <MudText Color="Color.Warning">@_err</MudText>
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public User? User { get; set; }
+
+    private string? _err;
+    private User? _user;
+
+    protected override void OnInitialized()
+    {
+        if (User is not null && _user is null)
+        {
+            _user = new();
+            _user.MergeFrom(User);
+        }
+    }
+
+    private async Task Submit()
+    {
+        if (_user is null || User is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_user.EMail))
+        {
+            _err = _ts.I18n.EMailIsRequired;
+            return;
+        }
+
+        User.MergeFrom(_user);
+        MudDialog?.Close();
+    }
+}

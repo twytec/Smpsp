@@ -1,0 +1,252 @@
+﻿@inject Data.TranslationService _ts
+@inject Data.PostService _ps
+@inject Data.LocalPreferencesService _lps
+@inject IDialogService _dlg
+
+@if (Post is not null && _user is not null)
+{
+    <MudPaper Class="pa-3" Elevation="3">
+        <MudStack>
+            <MudText Typo="Typo.h6">@_user.GetName()</MudText>
+            <MudStack Row="true">
+                <MudText Typo="Typo.body1">@_postDate</MudText>
+                <MudSpacer />
+                <MudMenu Icon="@Icons.Material.Filled.MoreHoriz" Size="Size.Small" Dense="true" AriaLabel="@_ts.I18n.OpenMenu">
+                    @if (_allowDelete)
+                    {
+                        <MudMenuItem Label="@_ts.I18n.Delete" OnClick="ClickDelete" />
+                    }
+                    @if (Post.CreationStatus == CreationStatus.Complete)
+                    {
+                        <MudMenuItem Label="@_ts.I18n.Save" Href="@_zip" Target="_blank" />
+                    }
+                </MudMenu>
+            </MudStack>
+            
+            <MudDivider />
+            @if (string.IsNullOrEmpty(Post.Text) == false)
+            {
+                <MudText>@Post.Text</MudText>
+            }
+            @if (Post.Medias.Count > 0)
+            {
+                <MudCarousel TData="object" Style="height: 300px;" AutoCycle="false">
+                    @foreach (var item in Post.Medias)
+                    {
+                        var f = $"/files/{item.File}";
+
+                        <MudCarouselItem>
+                            @if (item.IsImage)
+                            {
+                                <div class="d-flex" style="height:100%; width: 100%;">
+                                    <img src="@f" class="mx-auto my-auto" style="object-fit: contain; height:100%; width: 100%;" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex" style="height:300px; width: 100%;">
+                                    <video preload="auto" controls class="mx-auto my-auto" style="object-fit: contain; height:100%; width: 100%;">
+                                        <source src="@f" type="@item.GetMimeType()" />
+                                    </video>
+                                </div>
+                            }
+                        </MudCarouselItem>
+                    }
+                </MudCarousel>
+            }
+            @if (Post.Hashtags.Length > 0)
+            {
+                <MudDivider />
+                <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Baseline">
+                    <MudText>@(_ts.I18n.Hashtags): </MudText>
+                    @foreach (var item in Post.Hashtags)
+                    {
+                        <MudText Color="Color.Info">@item</MudText>
+                    }
+                </MudStack>
+            }
+            <MudDivider />
+            <MudStack Row="true" Wrap="Wrap.Wrap" Justify="Justify.SpaceBetween">
+                <MudButton OnClick="ClickMessages" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Message" Color="Color.Default">@_messages</MudButton>
+                
+                @if (_myVoting is null)
+                {
+                    <MudButton OnClick="(() => Voting(true))" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ThumbUpOffAlt" Color="Color.Default">@_thumbUp</MudButton>
+                    <MudButton OnClick="(() => Voting(false))" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ThumbDownOffAlt" Color="Color.Default">@_thumpDown</MudButton>
+                }
+                else if (_myVoting.Like == true)
+                {
+                    <MudButton OnClick="(() => Voting(true))" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ThumbUpAlt" Color="Color.Default">@_thumbUp</MudButton>
+                    <MudButton OnClick="(() => Voting(false))" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ThumbDownOffAlt" Color="Color.Default">@_thumpDown</MudButton>
+                }
+                else
+                {
+                    <MudButton OnClick="(() => Voting(true))" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ThumbUpOffAlt" Color="Color.Default">@_thumbUp</MudButton>
+                    <MudButton OnClick="(() => Voting(false))" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ThumbDownAlt" Color="Color.Default">@_thumpDown</MudButton>
+                }
+
+                <MudButton OnClick="ClickVeto" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Warning" Color="Color.Default">@_activeVetos</MudButton>
+
+            </MudStack>
+        </MudStack>
+        <MudOverlay Visible="_busy" DarkBackground="true" AutoClose="false" Absolute="true">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </MudOverlay>
+    </MudPaper>
+}
+
+@code {
+
+    [Parameter]
+    public Post? Post { get; set; }
+
+    private string _zip = string.Empty;
+
+    private bool _busy = false;
+
+    private User? _user;
+
+    private int _messages = 0;
+    private int _thumbUp = 0;
+    private int _thumpDown = 0;
+    private int _activeVetos = 0;
+
+    private PostVoting? _myVoting;
+    private string _postDate = string.Empty;
+    private bool _allowDelete = false;
+
+    protected override void OnParametersSet()
+    {
+        if (Post is null)
+            return;
+
+        _zip = $"files/{Post.Id}.zip";
+
+        if (_user is null)
+        {
+            _user = _ps.Users.FirstOrDefault(x => x.Id == Post.UserId);
+            _myVoting = Post.Votings.FirstOrDefault(x => x.UserId == _lps.User.Id);
+            _postDate = DateTimeOffset.FromUnixTimeSeconds(Post.CreatedUnixTimestamp).ToLocalTime().DateTime.ToString();
+
+            if (Post.UserId == _lps.User.Id || _lps.User.VetoLevel > 0)
+                _allowDelete = true;
+
+            Calc();
+        }
+    }
+
+    private void Calc()
+    {
+        if (Post is null)
+            return;
+
+        _messages = Post.Votings.Where(x => x.Text.Length > 0).Count();
+        _thumbUp = Post.Votings.Where(x => x.Like == true).Count();
+        _thumpDown = Post.Votings.Where(x => x.Like == false).Count();
+        _activeVetos = Post.Vetoes.Count();
+    }
+
+    private async Task ClickMessages()
+    {
+        DialogParameters<Dialogs.PostMessagesDialog> para = new()
+        {
+            { x => x.Post, Post }
+        };
+
+        await _dlg.ShowAsync<Dialogs.PostMessagesDialog>(_ts.I18n.Comment, para);
+    }
+
+    private async Task Voting(bool like)
+    {
+        if (Post is null)
+            return;
+
+        if (Post.Status != PostStatus.Voting)
+            await _dlg.ShowMessageBox(_ts.I18n.Error, _ts.I18n.VotingComplete, _ts.I18n.Ok);
+
+        PostVoting voting = new() { Like = like };
+        if (_myVoting is not null)
+        {
+            voting.Text = _myVoting.Text;
+        }
+
+        DialogParameters<Dialogs.VotingDialog> para = new()
+        {
+            { x => x.Voting, voting }
+        };
+
+        try
+        {
+            var dRef = await _dlg.ShowAsync<Dialogs.VotingDialog>(_ts.I18n.Voting, para);
+            var dRes = await dRef.Result;
+            if (dRes is not null && dRes.Canceled == false)
+            {
+                _busy = true;
+                StateHasChanged();
+
+                var res = await _ps.VoteAsync(Post.Id, voting);
+                if (res is null)
+                {
+                    if (_myVoting is null && _lps.User is not null)
+                    {
+                        voting.UserId = _lps.User.Id;
+                        Post.Votings.Add(voting);
+                        _myVoting = voting;
+                    }
+                    else if (_myVoting is not null)
+                    {
+                        _myVoting.Like = voting.Like;
+                        _myVoting.Text = voting.Text;
+                    }
+
+                    Calc();
+                }
+                else if (res is not null)
+                {
+                    await _dlg.ShowMessageBox(_ts.I18n.Error, res, _ts.I18n.Ok);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await _dlg.ShowMessageBox(_ts.I18n.Error, ex.Message, _ts.I18n.Ok);
+        }
+
+        _busy = false;
+    }
+
+    private async Task ClickVeto()
+    {
+        if (Post is null)
+            return;
+
+        DialogParameters<Dialogs.VetosDialog> para = new()
+        {
+            { x => x.Post, Post }
+        };
+
+        var dRef = await _dlg.ShowAsync<Dialogs.VetosDialog>(_ts.I18n.Veto, para);
+        await dRef.Result;
+        Calc();
+    }
+
+    private async Task ClickDelete()
+    {
+        if (Post is null)
+            return;
+
+        var yes = await _dlg.ShowMessageBox(_ts.I18n.Delete, _ts.I18n.ReallyDelete, _ts.I18n.Yes, _ts.I18n.No);
+        if (yes is true)
+        {
+            try
+            {
+                await _ps.DeletePostAsync(Post);
+                Calc();
+            }
+            catch (Exception ex)
+            {
+                await _dlg.ShowMessageBox(_ts.I18n.Error, ex.Message, _ts.I18n.Ok);
+            }
+        }
+    }
+}

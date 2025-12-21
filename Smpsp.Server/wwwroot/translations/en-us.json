@@ -1,0 +1,108 @@
+{
+  "languageCode": "en-us",
+
+  "active": "Active",
+  "add": "Add",
+  "addUser": "Add user",
+  "administrator": "Administrator",
+  "alternativeText": "Alternative text",
+
+  "back": "Back",
+
+  "code": "Code",
+  "codeIsRequired": "Code is required",
+  "comment": "Comment",
+  "convertFormatsToPng": "Convert formats to PNG",
+  "convertFormatsToWebm": "Convert formats to Webm",
+  "createPost": "Create post",
+
+  "delete": "Delete",
+  "deletePostAfterDays": "After how many days should posts be deleted?",
+  "description": "Description",
+
+  "edit": "Edit",
+  "eMail": "E-Mail",
+  "eMailCode": "Email code",
+  "eMailIsRequired": "E-Mail is required",
+  "error": "Error",
+
+  "fileNotSupported": "File not supported",
+  "fileIsCorrupted": "The file is corrupted.",
+  "fileTooLarge": "The file is too large. The maximum allowed size in bytes is: {0}",
+
+  "hashtags": "Hashtags",
+
+  "invalidCode": "Invalid code",
+  "invalidNameOrPassword": "Invalid name or password",
+  "invalidOrInactiveUser": "Invalid or inactive user.",
+  "invalidVetoId": "Invalid ID. A valid ID consists of {PostId}+{UserId}",
+
+  "key": "Key",
+
+  "language": "Language",
+
+  "mainVeto": "Main veto",
+  "maxAllowedImageSize": "Max allowed image size",
+  "maxAllowedVideoSize": "Max allowed video size",
+  "maxRequestBodySize": "Max request body size",
+  "mustBeConverted": "The media file is automatically converted after the post is created and cannot be displayed at this time.",
+
+  "name": "Name",
+  "nameIsRequired": "Name is required",
+  "next": "Next",
+  "no": "No",
+  "noRightOfVeto": "No right of veto - please contact a moderator.",
+  "notFound": "Not found",
+  "notSelected": "Not selected",
+
+  "ok": "Okay",
+  "openMenu": "Open menu",
+  "overrideVeto": "A higher veto level is required in order to override the current one.",
+
+  "password": "Password",
+  "passwordIsRequired": "Password is reqired",
+  "PostCreatedButNeedsConverted": "The post has been created, but the media files still need to be converted. It will then be published for voting",
+  "postNotFound": "Post not found",
+
+  "reallyDelete": "Really delete?",
+
+  "save": "Save",
+  "search": "Search",
+  "secondaryVeto": "Secondary veto",
+  "selected": "Selected",
+  "selectImage": "Select image",
+  "selectVideo": "Select video",
+  "settings": "Settings",
+  "sigIn": "Sign in",
+  "signInExpirationDays": "How many days does a user remain signed in?",
+  "signInCodeExpirationHours": "How many hours does the email code remain valid?",
+  "signInMailMessage": "Sign in code:",
+  "signInMailSubject": "Sign in",
+  "signOut": "Sign out",
+  "streamIsNotWritable": "Stream is not writable",
+  "supportedImageFormats": "Supported image formats",
+  "supportedVideoFormats": "Supported video formats",
+
+  "testSmtp": "Test SMTP settings",
+  "telephone": "Telephone",
+  "text": "Text",
+  "textIsRequired": "Test is required",
+
+  "unknownError": "Unknown error. Please try again later.",
+  "unknown": "Unknown",
+  "user": "User",
+  "userNotFound": "User not found",
+  "userOptions": "User options",
+  "userAlreadyExists": "A user with this e-mail already exists",
+  "userDoesNotExist": "User does not exist",
+  "username": "Username",
+
+  "veto": "Veto",
+  "vetoLevel": "Veto level",
+  "vetoNames": [ "None", "Moderators", "Chief" ],
+  "voting": "Voting",
+  "votingComplete": "No more voting possible. The selection process is complete.",
+  "votingPeriodInHours": "Voting period in hours",
+
+  "yes": "Yes"
+}

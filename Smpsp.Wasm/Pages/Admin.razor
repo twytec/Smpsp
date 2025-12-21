@@ -1,0 +1,203 @@
+﻿@page "/admin"
+@layout AdminLayout
+
+<PageTitle>Admin</PageTitle>
+
+<div style="height: 100dvh; overflow: auto;" class="pa-3">
+
+    <MudDataGrid Height="500" Items="_users" SortMode="SortMode.Single" Filterable="true" QuickFilter="QuickFilter">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">@_ts.I18n.User</MudText>
+            <MudSpacer />
+            <MudIconButton Class="mr-3" OnClick="AddUser" Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Add" aria-label="@_ts.I18n.AddUser" />
+            <MudTextField @bind-Value="_searchString" Placeholder="@_ts.I18n.Search" aria-label="@_ts.I18n.Search" Adornment="Adornment.Start" Immediate="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.EMail" Title="@_ts.I18n.EMail" />
+            <PropertyColumn Property="x => x.Name" Title="@_ts.I18n.Name" />
+            <PropertyColumn Property="x => x.VetoLevel" Title="@_ts.I18n.VetoLevel" />
+            <PropertyColumn Property="x => x.LanguageCode" Title="@_ts.I18n.Language" />
+            <PropertyColumn Property="x => x.Active" Title="@_ts.I18n.Active">
+                <CellTemplate>
+                    @if (context.Item.Active)
+                    {
+                        @_ts.I18n.Yes
+                    }
+                    else
+                    {
+                        @_ts.I18n.No
+                    }
+                </CellTemplate>
+            </PropertyColumn>
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudStack Row="true">
+                        <MudIconButton OnClick="(() => EditUser(context.Item))" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" aria-label="@_ts.I18n.Edit" />
+                        <MudIconButton OnClick="(() => DeleteUser(context.Item))" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" aria-label="@_ts.I18n.Delete" />
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudStack>
+            <MudText Typo="Typo.h6">@_ts.I18n.Administrator</MudText>
+
+            <MudTextField @bind-Value="_mys.AdminName" Label="@_ts.I18n.Name" />
+            <MudTextField @bind-Value="_mys.AdminPassword" Label="@_ts.I18n.Password" InputType="InputType.Password" />
+            <MudSelect @bind-Value="_mys.LanguageCode" Label="@_ts.I18n.Language">
+                @foreach (var item in _ts.Languages)
+                {
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudNumericField @bind-Value="_mys.MaxRequestBodySize" Label="@_ts.I18n.MaxRequestBodySize" Min="1000" />
+            <MudLink Href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.server.kestrel.core.kestrelserverlimits.maxrequestbodysize">@_ts.I18n.MaxRequestBodySize</MudLink>
+
+            <MudButton Color="Color.Primary" FullWidth="true" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudStack>
+            <MudText Typo="Typo.h6">@_ts.I18n.SigIn</MudText>
+            <MudNumericField @bind-Value="_mys.SignInExpirationDays" Label="@_ts.I18n.SigIn" HelperText="@_ts.I18n.SignInExpirationDays" Min="1" />
+            <MudNumericField @bind-Value="_mys.SignInCodeExpirationHours" Label="@_ts.I18n.EMailCode" HelperText="@_ts.I18n.SignInCodeExpirationHours" Min="1" />
+            <MudButton Color="Color.Primary" FullWidth="true" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudStack>
+            <MudText Typo="Typo.h6">@_ts.I18n.SigIn</MudText>
+
+            <MudTextField @bind-Value="_mys.SmtpServer" Label="SMTP-Server" />
+            <MudNumericField @bind-Value="_mys.SmtpPort" Label="Port" Min="1" Max="65535" />
+            <MudTextField @bind-Value="_mys.SmtpEmail" Label="@_ts.I18n.EMail" />
+            <MudTextField @bind-Value="_mys.SmtpUsername" Label="@_ts.I18n.Username" />
+            <MudTextField @bind-Value="_mys.SmtpPassword" Label="@_ts.I18n.Password" InputType="InputType.Password" />
+
+            <MudStack Row="true" StretchItems="StretchItems.All">
+                <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+                <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="TestMail">@_ts.I18n.TestSmtp</MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudStack>
+            <MudText Typo="Typo.h6">@_ts.I18n.CreatePost</MudText>
+            <MudNumericField @bind-Value="_mys.DefaultVotingPeriodInHours" Label="@_ts.I18n.Voting" HelperText="@_ts.I18n.VotingPeriodInHours" Min="1" />
+            <MudNumericField @bind-Value="_mys.DeletePostAfterDays" Label="@_ts.I18n.Delete" HelperText="@_ts.I18n.DeletePostAfterDays" Min="0" />
+
+            <MudNumericField @bind-Value="_mys.MaxAllowedImageSize" Label="@_ts.I18n.MaxAllowedImageSize" Min="1" />
+            <MudNumericField @bind-Value="_mys.MaxAllowedVideoSize" Label="@_ts.I18n.MaxAllowedVideoSize" Min="1" />
+            <MudButton Color="Color.Primary" FullWidth="true" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudDataGrid Height="300" Items="@_mediaImageTypes" EditMode="DataGridEditMode.Cell" ReadOnly="false">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">@_ts.I18n.SupportedImageFormats</MudText>
+                <MudSpacer />
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Outlined.Add" aria-label="@_ts.I18n.Add" OnClick="(() => _mediaImageTypes.Add(new(string.Empty)))" />
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.Item" Title="@_ts.I18n.Name" />
+                <TemplateColumn CellStyle="width: 48px;">
+                    <CellTemplate>
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Delete" aria-label="@_ts.I18n.Delete" OnClick="@(() => _mediaImageTypes.Remove(context.Item))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+
+        <MudDataGrid Class="mt-3" Height="300" Items="@_convertImageTypes" EditMode="DataGridEditMode.Cell" ReadOnly="false">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">@_ts.I18n.ConvertFormatsToPng</MudText>
+                <MudSpacer />
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Outlined.Add" aria-label="@_ts.I18n.Add" OnClick="(() => _convertImageTypes.Add(new(string.Empty)))" />
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.Item" Title="@_ts.I18n.Name" />
+                <TemplateColumn CellStyle="width: 48px;">
+                    <CellTemplate>
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Delete" aria-label="@_ts.I18n.Delete" OnClick="@(() => _convertImageTypes.Remove(context.Item))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+
+        <MudButton Class="mt-3" Color="Color.Primary" FullWidth="true" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+    </MudPaper>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudDataGrid Height="300" Items="@_mediaVideoTypes" EditMode="DataGridEditMode.Cell" ReadOnly="false">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">@_ts.I18n.SupportedVideoFormats</MudText>
+                <MudSpacer />
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Outlined.Add" aria-label="@_ts.I18n.Add" OnClick="(() => _mediaVideoTypes.Add(new(string.Empty)))" />
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.Item" Title="@_ts.I18n.Name" />
+                <TemplateColumn CellStyle="width: 48px;">
+                    <CellTemplate>
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Delete" aria-label="@_ts.I18n.Delete" OnClick="@(() => _mediaVideoTypes.Remove(context.Item))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+
+        <MudDataGrid Class="mt-3" Height="300" Items="@_convertVideoTypes" EditMode="DataGridEditMode.Cell" ReadOnly="false">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">@_ts.I18n.ConvertFormatsToWebm</MudText>
+                <MudSpacer />
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Outlined.Add" aria-label="@_ts.I18n.Add" OnClick="(() => _convertVideoTypes.Add(new(string.Empty)))" />
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.Item" Title="@_ts.I18n.Name" />
+                <TemplateColumn CellStyle="width: 48px;">
+                    <CellTemplate>
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Delete" aria-label="@_ts.I18n.Delete" OnClick="@(() => _convertVideoTypes.Remove(context.Item))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+
+        <MudButton Class="mt-3" Color="Color.Primary" FullWidth="true" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+    </MudPaper>
+
+    <MudPaper Class="mt-4 pa-3">
+        <MudDataGrid Height="300" Items="@_hashtags" EditMode="DataGridEditMode.Cell" ReadOnly="false">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">@_ts.I18n.Hashtags</MudText>
+                <MudSpacer />
+                <MudIconButton Color="Color.Primary" Variant="Variant.Filled" Icon="@Icons.Material.Outlined.Add" aria-label="@_ts.I18n.Add" OnClick="(() => _hashtags.Add(new(string.Empty)))" />
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.Item" Title="@_ts.I18n.Name" />
+                <TemplateColumn CellStyle="width: 48px;">
+                    <CellTemplate>
+                        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" aria-label="@_ts.I18n.Delete" OnClick="@(() => _hashtags.Remove(context.Item))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+
+        <MudButton Class="mt-3" Color="Color.Primary" FullWidth="true" Variant="Variant.Outlined" OnClick="SaveSettingsAsync">@_ts.I18n.Save</MudButton>
+    </MudPaper>
+    
+</div>
+
+@if (_busy == true)
+{
+    <MudOverlay Visible="true" DarkBackground="true" ZIndex="99" AutoClose="false" Style="display: grid;">
+        <p style="align-self: center; justify-self: center; text-align: center;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </p>
+    </MudOverlay>
+}

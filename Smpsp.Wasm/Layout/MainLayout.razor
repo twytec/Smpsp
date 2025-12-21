@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider BackdropClick="false" CloseOnEscapeKey="false" CloseButton="true" MaxWidth="MaxWidth.Medium" FullWidth="true" />
+<MudSnackbarProvider />
+
+<style>
+    :root {
+        --full-height: calc(100dvh - var(--mud-appbar-height) - 4px);
+    }
+</style>
+
+<div style="display: grid; grid-template-rows: var(--mud-appbar-height) 1fr; row-gap: 4px; height: 100dvh; overflow: hidden;">
+    <MudPaper>
+        <MudToolBar>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" AriaLabel="@_ts.I18n.OpenMenu">
+                <MudMenuItem Label="@_ts.I18n.Voting" OnClick="GoToHome" />
+                <MudMenuItem Label="@_ts.I18n.Selected" OnClick="GoToSelected" />
+                <MudMenuItem Label="@_ts.I18n.NotSelected" OnClick="GoToNotSelected" />
+            </MudMenu>
+            <MudIconButton OnClick="CreatePost" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Add" aria-label="@_ts.I18n.CreatePost" Color="Color.Primary" />
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Outlined.Person" aria-label="@_ts.I18n.UserOptions" OnClick="PersonClick" />
+        </MudToolBar>
+    </MudPaper>
+    @if (_loadView)
+    {
+        @Body
+    }
+</div>
+
+@if (_busy == true)
+{
+    <MudOverlay Visible="true" DarkBackground="true" ZIndex="99" AutoClose="false">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    </MudOverlay>
+}

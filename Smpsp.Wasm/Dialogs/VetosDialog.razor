@@ -1,0 +1,148 @@
+﻿@inject Data.TranslationService _ts
+@inject Data.PostService _ps
+@inject Data.LocalPreferencesService _lps
+
+<MudDialog>
+    <DialogContent>
+        <MudStack>
+            @if (Post is not null)
+            {
+                @if (_err is not null)
+                {
+                    <MudText Color="Color.Warning">@_err</MudText>
+                }
+
+                @if (_lps.User.VetoLevel > 0)
+                {
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            @if (_myVeto is not null)
+                            {
+                                <MudTextField @bind-Value="_vetoText" Label="@_ts.I18n.Veto" Lines="5" AutoGrow="true" />
+                                <MudButton Color="Color.Secondary" OnClick="AddVeto">@_ts.I18n.Save</MudButton>
+                                <MudButton Color="Color.Secondary" OnClick="() => DeleteVeto(_myVeto)">@_ts.I18n.Delete</MudButton>
+                            }
+                            else
+                            {
+                                <MudTextField @bind-Value="_vetoText" Label="@_ts.I18n.Veto" Lines="5" AutoGrow="true" />
+                                <MudButton Color="Color.Secondary" OnClick="AddVeto">@_ts.I18n.Add</MudButton>
+                            }
+                        </MudStack>
+                    </MudPaper>
+                }
+
+                @foreach (var item in Post.Vetoes)
+                {
+                    var u = _ps.Users.FirstOrDefault(x => x.Id == item.UserId);
+                    if (u is not null)
+                    {
+                        <MudPaper Class="pa-3">
+                            <MudStack>
+                                <MudText Typo="Typo.h6">@u.GetName()</MudText>
+                                <MudDivider />
+                                <MudText>
+                                    @item.Text
+                                </MudText>
+
+                                @if (_lps.User.VetoLevel > u.VetoLevel)
+                                {
+                                    <MudDivider />
+                                    <MudButton Color="Color.Secondary" OnClick="() => DeleteVeto(item)">@_ts.I18n.Delete</MudButton>
+                                }
+                            </MudStack>
+                        </MudPaper>
+                    }
+                }
+            }
+        </MudStack>
+    </DialogContent>
+</MudDialog>
+
+@if (_busy == true)
+{
+    <MudOverlay Visible="true" DarkBackground="true" ZIndex="2000" AutoClose="false" Style="display: grid;">
+        <p style="align-self: center; justify-self: center; text-align: center;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </p>
+    </MudOverlay>
+}
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public Post? Post { get; set; }
+
+    private bool _busy = false;
+    private string? _err = null;
+
+    private string _vetoText = string.Empty;
+    private PostVeto? _myVeto;
+
+    protected override void OnParametersSet()
+    {
+        _myVeto = Post?.Vetoes.FirstOrDefault(x => x.UserId == _lps.User.Id);
+        if (_myVeto is not null)
+            _vetoText = _myVeto.Text;
+    }
+
+    private async Task AddVeto()
+    {
+        if (Post is null)
+        {
+            return;
+        }
+
+        _err = null;
+        if (string.IsNullOrWhiteSpace(_vetoText))
+        {
+            _err = _ts.I18n.TextIsRequired;
+            return;
+        }
+
+        _busy = true;
+        StateHasChanged();
+        try
+        {
+            _err = await _ps.VetoAsync(Post.Id, _vetoText);
+            if (_err is null)
+            {
+                _myVeto = new() { Text = _vetoText, UserId = _lps.User.Id };
+                Post.Vetoes.Add(_myVeto);
+            }
+        }
+        catch (Exception ex)
+        {
+            _err = ex.Message;
+        }
+
+        _busy = false;
+    }
+
+    private async Task DeleteVeto(PostVeto v)
+    {
+        if (Post is null)
+        {
+            return;
+        }
+
+        _busy = true;
+        StateHasChanged();
+        try
+        {
+            _err = await _ps.VetoDeleteAsync(Post.Id, v.UserId);
+            if (_err is null)
+            {
+                Post.Vetoes.Remove(v);
+            }
+        }
+        catch (Exception ex)
+        {
+            _err = ex.Message;
+        }
+
+        _busy = false;
+    }
+}

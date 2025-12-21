@@ -1,0 +1,118 @@
+﻿@inject Data.TranslationService _ts
+@inject IHttpClientFactory _hcf
+
+<MudDialog>
+    <DialogContent>
+        <MudStack>
+            <MudTextField @bind-Value="_email" Label="@_ts.I18n.EMail" InputType="InputType.Email" />
+            <MudButton Class="mt-2" Color="Color.Primary" OnClick="SendMail" Variant="Variant.Filled" FullWidth="true">@_ts.I18n.Ok</MudButton>
+
+            <MudDivider />
+
+            @if (_antiforgeryToken is not null)
+            {
+                <MudTextField @bind-Value="_code" Label="@_ts.I18n.EMailCode" InputType="InputType.Number" />
+                <MudButton Class="mt-2" Color="Color.Secondary" OnClick="SendCode" Variant="Variant.Filled" FullWidth="true">@_ts.I18n.Ok</MudButton>
+            }
+        </MudStack>
+        @if (_err is not null)
+        {
+            <MudText Class="mt-3" Color="Color.Warning">@_err</MudText>
+        }
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    private string? _err;
+    private string _email = string.Empty;
+
+    private string? _antiforgeryToken;
+    private string _code = string.Empty;
+
+    private async Task SendMail()
+    {
+        _err = null;
+
+        if (string.IsNullOrWhiteSpace(_email))
+        {
+            _err = _ts.I18n.EMailIsRequired;
+            return;
+        }
+
+        try
+        {
+            var hc = _hcf.CreateClient(Data.HttpClientNames.Api);
+            using var res = await hc.PostAsJsonAsync("api/signIn", new SignInRequest() { EMail = _email });
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var json = await res.Content.ReadAsStringAsync();
+                if (Helpers.Json.TryGetModel<SignInReply>(json, out var m))
+                {
+                    _antiforgeryToken = m.AntiforgeryToken;
+                }
+                else
+                {
+                    _err = _ts.I18n.UnknownError;
+                }
+            }
+            else
+            {
+                _err = _ts.I18n.InvalidOrInactiveUser;
+            }
+        }
+        catch (Exception ex)
+        {
+            _err = ex.Message;
+        }
+    }
+
+    private async Task SendCode()
+    {
+        _err = null;
+
+        if (_antiforgeryToken is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_code))
+        {
+            _err = _ts.I18n.CodeIsRequired;
+            return;
+        }
+
+        try
+        {
+            var hc = _hcf.CreateClient(Data.HttpClientNames.Api);
+            using var res = await hc.PostAsJsonAsync("api/signIn/code", new SignInCodeRequest() { AntiforgeryToken = _antiforgeryToken, Code = _code });
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var json = await res.Content.ReadAsStringAsync();
+                if (Helpers.Json.TryGetModel<SignInCodeReply>(json, out var m))
+                {
+                    MudDialog?.Close(m);
+                }
+                else
+                {
+                    _err = _ts.I18n.UnknownError;
+                }
+            }
+            else if (res.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                _err = _ts.I18n.InvalidCode;
+            }
+            else
+            {
+                _err = _ts.I18n.UnknownError;
+            }
+        }
+        catch (Exception ex)
+        {
+            _err = ex.Message;
+        }
+    }
+}

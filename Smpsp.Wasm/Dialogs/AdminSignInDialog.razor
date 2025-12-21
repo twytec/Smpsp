@@ -1,0 +1,65 @@
+﻿@inject Data.TranslationService _ts
+@inject IHttpClientFactory _hcf
+
+<MudDialog>
+    <DialogContent>
+        <MudStack>
+            <MudTextField @bind-Value="_adminSignInRequest.Name" Label="@_ts.I18n.Name" />
+            <MudTextField @bind-Value="_adminSignInRequest.Password" Label="@_ts.I18n.Password" InputType="InputType.Password" />
+
+            @if (_err is not null)
+            {
+                <MudText Color="Color.Warning">@_err</MudText>
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">@_ts.I18n.Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    private string? _err;
+    private AdminSignInRequest _adminSignInRequest = new();
+
+    private async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(_adminSignInRequest.Name))
+        {
+            _err = _ts.I18n.NameIsRequired;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_adminSignInRequest.Password))
+        {
+            _err = _ts.I18n.PasswordIsRequired;
+            return;
+        }
+
+        try
+        {
+            var hc = _hcf.CreateClient(Data.HttpClientNames.Api);
+            using var res = await hc.PostAsJsonAsync("api/adminSignIn", _adminSignInRequest);
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var json = await res.Content.ReadAsStringAsync();
+                if (Helpers.Json.TryGetModel<AdminSignInReply>(json, out var m))
+                {
+                    MudDialog?.Close(m);
+                    return;
+                }
+            }
+
+            _err = _ts.I18n.InvalidNameOrPassword;
+        }
+        catch (Exception ex)
+        {
+            _err = ex.Message;
+        }
+    }
+}

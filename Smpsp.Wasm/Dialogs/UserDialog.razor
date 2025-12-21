@@ -1,0 +1,47 @@
+﻿@inject Data.TranslationService _ts
+@inject Data.LocalPreferencesService _lps
+@inject NavigationManager _nm
+
+<MudDialog>
+    <DialogContent>
+        <MudStack>
+            @if (User is not null)
+            {
+                <MudTextField @bind-Value="User.Name" Label="@_ts.I18n.Name" />
+                <MudSelect @bind-Value="User.LanguageCode" Label="@_ts.I18n.Language">
+                    @foreach (var item in _ts.Languages)
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudText>@_ts.I18n.EMail: @User.EMail</MudText>
+                <MudText>@_ts.I18n.VetoLevel: @_ts.I18n.GetVetoName(User.VetoLevel)</MudText>
+            }
+        </MudStack>
+        <MudStack Class="mt-3" Row="true" Justify="Justify.SpaceBetween">
+            <MudButton Color="Color.Secondary" OnClick="SignOut">@_ts.I18n.SignOut</MudButton>
+            <MudButton Color="Color.Primary" OnClick="Submit">@_ts.I18n.Save</MudButton>
+        </MudStack>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public User? User { get; set; }
+
+    private async Task Submit()
+    {
+        MudDialog?.Close();
+    }
+
+    private async Task SignOut()
+    {
+        await _lps.DeleteAllPreferencesAsync();
+        _nm.NavigateTo("/", true);
+    }
+}

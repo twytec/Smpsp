@@ -1,0 +1,15 @@
+﻿@page "/"
+
+<PageTitle>SMPSP</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Style="height: var(--full-height); overflow-y: auto;">
+    <MudStack>
+        @foreach (var p in _ps.Posts)
+        {
+            if (p.Status == PostStatus.Voting)
+            {
+                <PostView @key="p" Post="p" />
+            }
+        }
+    </MudStack>
+</MudContainer>

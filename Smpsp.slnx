@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Readme.md" />
+  </Folder>
+  <Project Path="Smpsp.aTest/Smpsp.aTest.csproj" />
+  <Project Path="Smpsp.Core/Smpsp.Core.csproj" />
+  <Project Path="Smpsp.Server/Smpsp.Server.csproj" />
+  <Project Path="Smpsp.Wasm/Smpsp.Wasm.csproj" />
+</Solution>

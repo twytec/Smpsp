@@ -1,0 +1,124 @@
+﻿<MudDialog>
+    <DialogContent>
+        @if (_showUploadFile == true)
+        {
+            <MudStack>
+                <MudFileUpload T="IBrowserFile" Accept="@_mediaImageFormats" FilesChanged="UploadImageFile">
+                    <ActivatorContent>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   FullWidth="true"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload">
+                            @_ts.I18n.SelectImage
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+
+                <MudFileUpload T="IBrowserFile" Accept="@_mediaVideoFormats" FilesChanged="UploadVideoFile">
+                    <ActivatorContent>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Secondary"
+                                   FullWidth="true"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload">
+                            @_ts.I18n.SelectVideo
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+
+                <MudCarousel TData="object" Style="height: 300px;" AutoCycle="false" SelectedIndexChanged="CarouselSelectedIndecChanged">
+                    @if (_post.Medias.Count > 0)
+                    {
+                        foreach (var item in _post.Medias)
+                        {
+                            var f = $"/temp/{item.File}";
+
+                            <MudCarouselItem>
+                                @if (item.MustBeConverted)
+                                {
+                                    <div class="d-flex flex-column flex-column justify-center" style="height:100%">
+                                        <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.SyncProblem" Size="@Size.Large" />
+                                        <MudText Align="@Align.Center" Class="mx-auto">@_ts.I18n.MustBeConverted</MudText>
+                                    </div>
+                                }
+                                else if (item.IsImage)
+                                {
+                                    <div class="d-flex" style="height:100%">
+                                        <MudImage Src="@f" Style="height: 100%;" Class="mx-auto my-auto" ObjectFit="ObjectFit.Contain" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="d-flex" style="height:100%">
+                                        <video preload="auto" controls class="mx-auto my-auto" style="height: 100%; object-fit: contain;">
+                                            <source src="@f" type="@item.GetMimeType()" />
+                                        </video>
+                                    </div>
+                                }
+                            </MudCarouselItem>
+                        }
+                    }
+                    else
+                    {
+                        <MudCarouselItem Color="@Color.Primary">
+                            <div class="d-flex" style="height:100%">
+                                <MudIcon Class="mx-auto my-auto" Icon="@Icons.Material.Filled.PermMedia" Size="@Size.Large" />
+                            </div>
+                        </MudCarouselItem>
+                    }
+                </MudCarousel>
+
+                @if (_post.Medias.Count > 0)
+                {
+                    <MudTextField @bind-Value="_post.Medias[_carouselSelectedIndex].ContentAlt" Label="@_ts.I18n.AlternativeText" Lines="3" AutoGrow />
+                }
+            </MudStack>
+        }
+
+        @if (_showText)
+        {
+            <MudStack>
+                <MudTextField @bind-Value="_post.Text" Label="@_ts.I18n.Text" Lines="5" AutoGrow />
+                <MudNumericField @bind-Value="_votingHours" Label="@_ts.I18n.VotingPeriodInHours" Min="1" />
+
+                @if (_hashtags is not null)
+                {
+                    <MudText>@_ts.I18n.Hashtags</MudText>
+                    <MudChipSet @bind-SelectedValues="_selectedHashtags" SelectionMode="SelectionMode.MultiSelection" CheckMark="true" Variant="Variant.Text" Color="Color.Info">
+                        @foreach (var item in _hashtags)
+                        {
+                            <MudChip Value="@item" />
+                        }
+                    </MudChipSet>
+                }
+            </MudStack>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Back" Variant="Variant.Text" Color="Color.Secondary">@_ts.I18n.Back</MudButton>
+
+        @if (_showText)
+        {
+            <MudButton OnClick="Save" Variant="Variant.Text" Color="Color.Primary">@_ts.I18n.Save</MudButton>
+        }
+        else
+        {
+            <MudButton OnClick="Next" Variant="Variant.Text" Color="Color.Primary">@_ts.I18n.Next</MudButton>
+        }
+
+    </DialogActions>
+</MudDialog>
+
+@if (_busy == true)
+{
+    <MudOverlay Visible="true" DarkBackground="true" ZIndex="2000" AutoClose="false" Style="display: grid;">
+        <p style="align-self: center; justify-self: center; text-align: center;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </p>
+    </MudOverlay>
+}
+
+<style>
+    .mud-dialog .mud-dialog-actions {
+        justify-content: space-between;
+    }
+</style>

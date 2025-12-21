@@ -1,0 +1,34 @@
+﻿@inject Data.TranslationService _ts
+
+<MudDialog>
+    <DialogContent>
+        <MudStack>
+            @if (Voting is not null)
+            {
+                <MudRadioGroup @bind-Value="Voting.Like">
+                    <MudRadio Value="true">
+                        <MudIcon Icon="@Icons.Material.Filled.ThumbUp" />
+                    </MudRadio>
+                    <MudRadio Value="false">
+                        <MudIcon Icon="@Icons.Material.Filled.ThumbDown" />
+                    </MudRadio>
+                </MudRadioGroup>
+                <MudTextField @bind-Value="Voting.Text" Label="@_ts.I18n.Comment" Lines="5" AutoGrow="true" />
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">@_ts.I18n.Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public PostVoting? Voting { get; set; }
+
+    private async Task Submit() => MudDialog?.Close();
+}

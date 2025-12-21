@@ -1,0 +1,17 @@
+﻿@page "/selected"
+@inject Data.PostService _ps
+@inject Data.TranslationService _ts
+
+<PageTitle>@_ts.I18n.Selected</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Style="height: var(--full-height); overflow-y: auto;">
+    <MudStack>
+        @foreach (var p in _ps.Posts)
+        {
+            if (p.Status == PostStatus.Selected)
+            {
+                <PostView Post="p" />
+            }
+        }
+    </MudStack>
+</MudContainer>
