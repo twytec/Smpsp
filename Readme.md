@@ -49,3 +49,14 @@ Veto level ranges from 0 to 2,147,483,647 :)
 - [ ] Automatic posting on TikTok
 - [ ] Automatic posting on YouTube
 - [ ] Automatic posting on Mastodon
+
+## Installation
+SMPSP is a web-based application that runs on a server.
+
+SMPSP should run continuously in the background so that background processes can be processed.
+
+For detailed installation instructions, please refer to the official documentation: [Host and deploy ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy)
+
+The simplest option is to find an ASP.NET Core hosting provider, of which there are many.
+
+To process videos, the application requires FFmpeg and FFprobe for the respective operating system. Both files must be saved in the appdatas/ffmpeg folder. [FFmpeg](https://www.ffmpeg.org/)
