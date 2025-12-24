@@ -22,7 +22,6 @@
         //D
         public string Delete { get; set; } = string.Empty;
         public string DeletePostAfterDays { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
         //E
         public string Edit { get; set; } = string.Empty;
         public string EMail { get; set; } = string.Empty;
@@ -43,11 +42,9 @@
         public string InvalidVetoId { get; set; } = string.Empty;
         //J
         //K
-        public string Key { get; set; } = string.Empty;
         //L
         public string Language { get; set; } = string.Empty;
         //M
-        public string MainVeto { get; set; } = string.Empty;
         public string MaxAllowedImageSize { get; set; } = string.Empty;
         public string MaxAllowedVideoSize { get; set; } = string.Empty;
         public string MaxRequestBodySize { get; set; } = string.Empty;
@@ -57,7 +54,6 @@
         public string NameIsRequired { get; set; } = string.Empty;
         public string Next { get; set; } = string.Empty;
         public string No { get; set; } = string.Empty;
-        public string NoRightOfVeto { get; set; } = string.Empty;
         public string NotFound { get; set; } = string.Empty;
         public string NotSelected { get; set; } = string.Empty;
         //O
@@ -75,7 +71,6 @@
         //S
         public string Save { get; set; } = string.Empty;
         public string Search { get; set; } = string.Empty;
-        public string SecondaryVeto { get; set; } = string.Empty;
         public string Selected { get; set; } = string.Empty;
         public string SelectImage { get; set; } = string.Empty;
         public string SelectVideo { get; set; } = string.Empty;
@@ -86,7 +81,6 @@
         public string SignInMailMessage { get; set; } = string.Empty;
         public string SignInMailSubject { get; set; } = string.Empty;
         public string SignOut { get; set; } = string.Empty;
-        public string StreamIsNotWritable { get; set; } = string.Empty;
         public string SupportedImageFormats { get; set; } = string.Empty;
         public string SupportedVideoFormats { get; set; } = string.Empty;
         //T

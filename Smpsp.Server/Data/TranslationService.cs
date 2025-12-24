@@ -33,6 +33,8 @@
                 return new();
             else if (_trans.TryGetValue(code, out var data))
                 return data;
+            else if (code.Split('-') is string[] s && _trans.Values.FirstOrDefault(x => x.LanguageCode.StartsWith(s[0])) is Translation t)
+                return t;
             else if (_trans.TryGetValue("en-us", out data))
                 return data;
             else

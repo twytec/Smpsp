@@ -154,7 +154,7 @@ namespace Smpsp.Server.Backgrounds
                 else
                 {
                     _datas.TryRemove(msg.Id, out _);
-                    throw new Exception(uass.I18n.StreamIsNotWritable);
+                    throw new Exception(uass.I18n.UnknownError);
                 }
             }
             else

@@ -1,4 +1,4 @@
-# Social media post selection process
+# Social media - Post selection process
 
 The project is currently in the beta phase.
 
@@ -57,6 +57,21 @@ SMPSP should run continuously in the background so that background processes can
 
 For detailed installation instructions, please refer to the official documentation: [Host and deploy ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy)
 
-The simplest option is to find an ASP.NET Core hosting provider, of which there are many.
+The simplest option is to find an ASP.NET Core hosting provider or Docker.
 
 To process videos, the application requires FFmpeg and FFprobe for the respective operating system. Both files must be saved in the appdatas/ffmpeg folder. [FFmpeg](https://www.ffmpeg.org/)
+
+## Getting started
+After installation, open the admin page in a browser. https://your-domain/admin
+
+Sign in with the default admin user:
+- Username: admin
+- Password: admin
+
+Change the username and password of the default admin user. The username, password and all settings are stored in appdatas/mysettings.json.
+
+Set the email server settings.
+
+Create users.
+
+Let's go

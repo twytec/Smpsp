@@ -37,11 +37,8 @@
   "invalidOrInactiveUser": "Invalid or inactive user.",
   "invalidVetoId": "Invalid ID. A valid ID consists of {PostId}+{UserId}",
 
-  "key": "Key",
-
   "language": "Language",
 
-  "mainVeto": "Main veto",
   "maxAllowedImageSize": "Max allowed image size",
   "maxAllowedVideoSize": "Max allowed video size",
   "maxRequestBodySize": "Max request body size",
@@ -51,7 +48,6 @@
   "nameIsRequired": "Name is required",
   "next": "Next",
   "no": "No",
-  "noRightOfVeto": "No right of veto - please contact a moderator.",
   "notFound": "Not found",
   "notSelected": "Not selected",
 
@@ -68,7 +64,6 @@
 
   "save": "Save",
   "search": "Search",
-  "secondaryVeto": "Secondary veto",
   "selected": "Selected",
   "selectImage": "Select image",
   "selectVideo": "Select video",
@@ -79,14 +74,13 @@
   "signInMailMessage": "Sign in code:",
   "signInMailSubject": "Sign in",
   "signOut": "Sign out",
-  "streamIsNotWritable": "Stream is not writable",
   "supportedImageFormats": "Supported image formats",
   "supportedVideoFormats": "Supported video formats",
 
   "testSmtp": "Test SMTP settings",
   "telephone": "Telephone",
   "text": "Text",
-  "textIsRequired": "Test is required",
+  "textIsRequired": "Text is required",
 
   "unknownError": "Unknown error. Please try again later.",
   "unknown": "Unknown",
