@@ -29,6 +29,8 @@
         public string EMailIsRequired { get; set; } = string.Empty;
         public string Error { get; set; } = string.Empty;
         //F
+        public string FFmpegBin { get; set; } = string.Empty;
+        public string FFmpegUseGlobal { get; set; } = string.Empty;
         public string FileNotSupported { get; set; } = string.Empty;
         public string FileIsCorrupted { get; set; } = string.Empty;
         public string FileTooLarge { get; set; } = string.Empty;
@@ -68,6 +70,7 @@
         //Q
         //R
         public string ReallyDelete { get; set; } = string.Empty;
+        public string RestartServer { get; set; } = string.Empty;
         //S
         public string Save { get; set; } = string.Empty;
         public string Search { get; set; } = string.Empty;

@@ -59,8 +59,6 @@ For detailed installation instructions, please refer to the official documentati
 
 The simplest option is to find an ASP.NET Core hosting provider or Docker.
 
-To process videos, the application requires FFmpeg and FFprobe for the respective operating system. Both files must be saved in the appdatas/ffmpeg folder. [FFmpeg](https://www.ffmpeg.org/)
-
 ## Getting started
 After installation, open the admin page in a browser. https://your-domain/admin
 
@@ -72,6 +70,8 @@ Change the username and password of the default admin user. The username, passwo
 
 Set the email server settings.
 
+Set the FFmpeg settings.
+
 Create users.
 
-Let's go
+Done

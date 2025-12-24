@@ -11,10 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 var ps = new PathService(builder.Environment.ContentRootPath);
 builder.Services.AddSingleton(ps);
 
-FFMpegCore.GlobalFFOptions.Configure(new FFMpegCore.FFOptions() { BinaryFolder = ps.FFMpegPath, TemporaryFilesFolder = ps.TempPath });
-
 MySettingsService mss = new(ps);
 builder.Services.AddSingleton(mss);
+
+if (mss.Settings.FFmpegGlobal)
+    FFMpegCore.GlobalFFOptions.Configure(new FFMpegCore.FFOptions() { TemporaryFilesFolder = ps.TempPath });
+else
+    FFMpegCore.GlobalFFOptions.Configure(new FFMpegCore.FFOptions() { BinaryFolder = ps.FFMpegPath, TemporaryFilesFolder = ps.TempPath });
 
 builder.WebHost.ConfigureKestrel(o =>
 {

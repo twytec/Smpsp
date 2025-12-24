@@ -26,6 +26,8 @@
   "eMailIsRequired": "E-Mail is required",
   "error": "Error",
 
+  "fFmpegBin": "The project uses FFmpeg and FFProbe to process videos. FFmpeg and FFProbe are either installed globally or stored in the appdatas/ffmpeg folder. See:",
+  "fFmpegUseGlobal": "FFmpeg and FFProbe are installed globally.",
   "fileNotSupported": "File not supported",
   "fileIsCorrupted": "The file is corrupted.",
   "fileTooLarge": "The file is too large. The maximum allowed size in bytes is: {0}",
@@ -61,6 +63,7 @@
   "postNotFound": "Post not found",
 
   "reallyDelete": "Really delete?",
+  "restartServer": "Restart server after change",
 
   "save": "Save",
   "search": "Search",
