@@ -65,7 +65,6 @@
         //P
         public string Password { get; set; } = string.Empty;
         public string PasswordIsRequired { get; set; } = string.Empty;
-        public string PostCreatedButNeedsConverted { get; set; } = string.Empty;
         public string PostNotFound { get; set; } = string.Empty;
         //Q
         //R

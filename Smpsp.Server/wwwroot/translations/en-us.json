@@ -43,7 +43,7 @@
 
   "maxAllowedImageSize": "Max allowed image size",
   "maxAllowedVideoSize": "Max allowed video size",
-  "maxRequestBodySize": "Max request body size",
+  "maxRequestBodySize": "Maximum message size to the server",
   "mustBeConverted": "The media file is automatically converted after the post is created and cannot be displayed at this time.",
 
   "name": "Name",
@@ -59,7 +59,6 @@
 
   "password": "Password",
   "passwordIsRequired": "Password is reqired",
-  "PostCreatedButNeedsConverted": "The post has been created, but the media files still need to be converted. It will then be published for voting",
   "postNotFound": "Post not found",
 
   "reallyDelete": "Really delete?",
@@ -96,7 +95,11 @@
 
   "veto": "Veto",
   "vetoLevel": "Veto level",
-  "vetoNames": [ "None", "Moderators", "Chief" ],
+  "vetoNames": [
+    "None",
+    "Moderators",
+    "Chief"
+  ],
   "voting": "Voting",
   "votingComplete": "No more voting possible. The selection process is complete.",
   "votingPeriodInHours": "Voting period in hours",

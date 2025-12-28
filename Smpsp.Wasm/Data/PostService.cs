@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 
 namespace Smpsp.Wasm.Data
 {
-    public class PostService(HttpClientService _hcs, TranslationService _ts, ISnackbar _snackbar)
+    public class PostService(HttpClientService _hcs, TranslationService _ts)
     {
         public EventHandler<PostService>? StateHasChanged;
 
@@ -91,10 +91,6 @@ namespace Smpsp.Wasm.Data
                     {
                         Posts.Insert(0, np);
                         StateHasChanged?.Invoke(this, this);
-                    }
-                    else
-                    {
-                        _snackbar.Add(_ts.I18n.PostCreatedButNeedsConverted, Severity.Info);
                     }
                 }
             }

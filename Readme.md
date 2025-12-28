@@ -2,6 +2,8 @@
 
 The project is currently in the beta phase.
 
+Smpsp is a multi-user cross-poster with a voting and veto system.
+
 Many organisations wish to showcase their activities on social media platforms. 
 However, particularly in larger companies, it is often not feasible to allow all 
 employees to publish their own posts on the official channels.
