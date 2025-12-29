@@ -14,8 +14,6 @@ numerous advantages. It encourages participation and enables employees to gain i
 into various perspectives within the organisation. At the same time, potentially 
 problematic posts can be identified and prevented at an early stage.
 
-SMPSP specifically supports this approach.
-
 ![app recordning](./assets/smpsp.gif)
 
 ## Voting process
