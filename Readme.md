@@ -68,7 +68,7 @@ Sign in with the default admin user:
 
 Change the username and password of the default admin user. The username, password and all settings are stored in appdatas/mysettings.json.
 
-Set the email server settings.
+Configure the SMTP settings so that the system can send emails.
 
 Set the FFmpeg settings.
 
